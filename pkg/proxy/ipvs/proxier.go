@@ -1270,8 +1270,12 @@ func (proxier *Proxier) deleteEndpointConnections(connectionMap map[endpointServ
 func (proxier *Proxier) syncService(svcName string, vs *utilipvs.VirtualServer, bindAddr bool) error {
 	appliedVirtualServer, _ := proxier.ipvs.GetVirtualServer(vs)
 	if appliedVirtualServer == nil || !appliedVirtualServer.Equal(vs) {
-		glog.V(3).Infof("appliedVirtualServer: %v,%v,%v,%v,%v,%v\n", appliedVirtualServer.Address, appliedVirtualServer.Protocol, appliedVirtualServer.Port, appliedVirtualServer.Scheduler, appliedVirtualServer.Flags, appliedVirtualServer.Timeout)
-		glog.V(3).Infof("vs: %v,%v,%v,%v,%v,%v\n", vs.Address, vs.Protocol, vs.Port, vs.Scheduler, vs.Flags, vs.Timeout)
+		if appliedVirtualServer != nil {
+			glog.V(3).Infof("appliedVirtualServer: %v,%v,%v,%v,%v,%v\n", appliedVirtualServer.Address, appliedVirtualServer.Protocol, appliedVirtualServer.Port, appliedVirtualServer.Scheduler, appliedVirtualServer.Flags, appliedVirtualServer.Timeout)
+		}
+		if vs != nil {
+			glog.V(3).Infof("vs: %v,%v,%v,%v,%v,%v\n", vs.Address, vs.Protocol, vs.Port, vs.Scheduler, vs.Flags, vs.Timeout)
+		}
 		if appliedVirtualServer == nil {
 			// IPVS service is not found, create a new service
 			glog.V(3).Infof("Adding new service %q %s:%d/%s", svcName, vs.Address, vs.Port, vs.Protocol)
